@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-NEWS_Crawer/
+#NEWS_Crawer/
 lib64/
 parts/
 sdist/
