@@ -3,6 +3,7 @@ import re
 import string
 import requests
 import datetime
+from db import DB
 
 from bs4 import BeautifulSoup as bs
 from urllib.parse import urljoin
@@ -23,9 +24,21 @@ class Crawler():
         self.current_page=0
         self.seeds=[]
         self.status=0
+        self.db=DB()
 
-    def write_to_file(self):
-        pass
+    def write_to_file(self,filename, content):
+        """ Write string to given filename
+        				:param filename: string
+        				:param content: sring
+        		"""
+        try:
+            with open(filename, 'w', encoding='utf-8') as f:
+                f.write(content)
+        except FileNotFoundError:
+            print(f'File {filename} does not exists!')
+        except Exception as e:
+            print(f'Can not write to file: {filename}: {str(e)}')
+            exit(-1)
     def get_date(self,pub:bs):
         date_list = pub.find('span', class_='entry-date').getText().split()
         today = datetime.date.today()
@@ -62,7 +75,7 @@ class Crawler():
             today=datetime.date.today()
             news_date=self.get_date(pub)
             diff=relativedelta(today,news_date)
-            if diff.days<10:
+            if diff.days<5:
                 href=pub.find('a').get('href')
                 if href:
                     full_url=urljoin(BASE_URL,href)
@@ -83,10 +96,16 @@ class Crawler():
             "pub_date":pub_date.strftime('%Y-%m-%d'),
             "pub_content":pub_content
         }
+    def save_pubs_data(self,url):
+        pub_data=self.get_pubs_data(url)
+        self.db.insert_row(pub_data)
     def run(self):
-        self.get_links()
-        for link in self.seeds:
-            print(self.get_pubs_data(link))
+        # self.get_links()
+        # for link in self.seeds:
+        #     self.save_pubs_data(link)
+        for link in LINKS:
+            self.save_pubs_data(link)
+        self.db.show_news_table()
 
 if __name__=='__main__':
     cr=Crawler(BASE_URL)
