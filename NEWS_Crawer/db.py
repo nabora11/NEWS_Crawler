@@ -1,5 +1,5 @@
 import mysql.connector as mc
-from __init__ import *
+# from __init__ import *
 from configparser import ConfigParser
 import os
 from datetime import date
@@ -78,24 +78,28 @@ class DB():
             result = cursor.fetchone()
 
         if result:
-            print(result[0])
+            return result[0]
         else:
             raise ValueError('No data in table')
-    def show_news_table(self):
+    def select_all_data(self):
         sql="SELECT * FROM news_table"
         with self.conn.cursor(buffered=True) as cursor:
             cursor.execute(sql)
             result=cursor.fetchall()
-        for row in result:
-            print(row,'\n')
+        return result
 
     def get_column_names(self):
         # sql = "SELECT id, title, pub_date, content FROM  news_table LIMIT 1;"
-        sql="SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'news_table';"
+        # sql="SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'news_table';"
+        sql="""SELECT DISTINCT COLUMN_NAME FROM
+        INFORMATION_SCHEMA.COLUMNS
+        WHERE COLUMN_NAME  IN ('id', 'title','pub_date','content','created_at','updated_at')
+        AND TABLE_NAME = 'news_table';"""
         with self.conn.cursor(buffered=True) as cursor:
             cursor.execute(sql)
             result = cursor.fetchall()
-        print(result)
+        result_list=list(item[0] for item in result)
+        return result_list
     def drop_news_table(self):
         sql = "DROP TABLE IF EXISTS news_table;"
 
@@ -103,20 +107,29 @@ class DB():
             cursor.execute(sql)
             self.conn.commit()
 
+    def reset_indexes_table(self):
+        sql=""" DELETE FROM news_table WHERE id=1;
+                ALTER TABLE news_table DROP COLUMN id;
+                ALTER TABLE news_table AUTO_INCREMENT = 1;
+ALTER TABLE news_table ADD `id` int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;"""
+        with self.conn.cursor() as cursor:
+            cursor.execute(sql)
+
 if __name__=='__main__':
     db=DB()
-    row_data_= dict(tltle='news1', pub_date=date(2023,12,23), content='text1')
-    # row_data_=['news1',date(2023,12,23),'text1']
-    rows_data=[
-        ('news2',date(2023,12,24),'text2'),
-        ('news3',date(2023,12,25),'text3'),
-        ('news4',date(2023,12,26),'text4')
-    ]
+#     row_data_= dict(tltle='news1', pub_date=date(2023,12,23), content='text1')
+#     # row_data_=['news1',date(2023,12,23),'text1']
+#     rows_data=[
+#         ('news2',date(2023,12,24),'text2'),
+#         ('news3',date(2023,12,25),'text3'),
+#         ('news4',date(2023,12,26),'text4')
+#     ]
 
-    db.create_news_table()
-    db.insert_row(row_data_)
-    db.insert_rows(rows_data)
-    db.show_news_table()
-    db.get_column_names()
-    db.get_last_updated_date()
-    db.drop_news_table()
+    # db.create_news_table()
+    # db.insert_row(row_data_)
+    # db.insert_rows(rows_data)
+    # db.reset_indexes_table()
+    print(db.select_all_data())
+    # print(db.get_column_names())
+    # db.get_last_updated_date()
+    # db.drop_news_table()

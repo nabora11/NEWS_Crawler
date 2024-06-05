@@ -3,7 +3,7 @@ import re
 import string
 import requests
 import datetime
-from db import DB
+from NEWS_Crawer.db import DB
 
 from bs4 import BeautifulSoup as bs
 from urllib.parse import urljoin
@@ -75,7 +75,7 @@ class Crawler():
             today=datetime.date.today()
             news_date=self.get_date(pub)
             diff=relativedelta(today,news_date)
-            if diff.days<5:
+            if diff.days<2:
                 href=pub.find('a').get('href')
                 if href:
                     full_url=urljoin(BASE_URL,href)
@@ -100,12 +100,13 @@ class Crawler():
         pub_data=self.get_pubs_data(url)
         self.db.insert_row(pub_data)
     def run(self):
-        # self.get_links()
-        # for link in self.seeds:
-        #     self.save_pubs_data(link)
-        for link in LINKS:
+        self.get_links()
+        for link in self.seeds:
             self.save_pubs_data(link)
-        self.db.show_news_table()
+        # self.db.reset_indexes_table()
+        # for link in LINKS:
+        #     self.save_pubs_data(link)
+        print('Crawler finished its job!')
 
 if __name__=='__main__':
     cr=Crawler(BASE_URL)
