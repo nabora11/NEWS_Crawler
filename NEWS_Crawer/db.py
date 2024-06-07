@@ -15,6 +15,7 @@ class DB():
                 sql = "CREATE DATABASE IF NOT EXISTS faktor_bg_news"
                 cursor.execute(sql)
             self.conn=mc.connect(**mysql_config)
+            # self.drop_news_table()
             self.create_news_table()
         except mc.Error as e:
             print(e)
@@ -100,20 +101,20 @@ class DB():
             result = cursor.fetchall()
         result_list=list(item[0] for item in result)
         return result_list
-    def drop_news_table(self):
-        sql = "DROP TABLE IF EXISTS news_table;"
+    def delete_data_news_table(self):
+        sql = "TRUNCATE TABLE news_table;"
 
         with self.conn.cursor() as cursor:
             cursor.execute(sql)
             self.conn.commit()
 
-    def reset_indexes_table(self):
-        sql=""" DELETE FROM news_table WHERE id=1;
-                ALTER TABLE news_table DROP COLUMN id;
-                ALTER TABLE news_table AUTO_INCREMENT = 1;
-ALTER TABLE news_table ADD `id` int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;"""
-        with self.conn.cursor() as cursor:
-            cursor.execute(sql)
+#     def reset_indexes_table(self):
+#         sql=""" DELETE FROM news_table WHERE id=1;
+#                 ALTER TABLE news_table DROP COLUMN id;
+#                 ALTER TABLE news_table AUTO_INCREMENT = 1;
+# ALTER TABLE news_table ADD `id` int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;"""
+#         with self.conn.cursor() as cursor:
+#             cursor.execute(sql)
 
 if __name__=='__main__':
     db=DB()
@@ -129,7 +130,7 @@ if __name__=='__main__':
     # db.insert_row(row_data_)
     # db.insert_rows(rows_data)
     # db.reset_indexes_table()
-    print(db.select_all_data())
+    # print(db.select_all_data())
     # print(db.get_column_names())
     # db.get_last_updated_date()
-    # db.drop_news_table()
+    db.delete_data_news_table()

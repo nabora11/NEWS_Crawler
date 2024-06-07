@@ -1,5 +1,7 @@
 import sys
+from NEWS_Crawer.style import *
 from time import strftime
+from warnings import warn
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtCore as qtc
 from PyQt6 import QtGui as qtg
@@ -80,7 +82,7 @@ class TableView(qtw.QTableView):
         # self.verticalHeader().setSectionResizeMode(qtw.QHeaderView.Stretch)
         self.verticalHeader().setSectionResizeMode(qtw.QHeaderView.ResizeMode.ResizeToContents)
 
-        # set all cells hight
+        # set all cells height
         # header = self.verticalHeader()
         # header.setDefaultSectionSize(50)
         # header.setSectionResizeMode(qtw.QHeaderView.Fixed)
@@ -92,15 +94,6 @@ class TableView(qtw.QTableView):
         self.setSortingEnabled(True)
         self.sortByColumn(0, qtc.Qt.SortOrder.AscendingOrder)
 
-    # def ___setup_model_SQL_table_model(self):
-    #     model = QSqlTableModel(self)
-    #     model.setTable("news_table")
-    #     model.setEditStrategy(QSqlTableModel.EditStrategy.OnFieldChange)
-    #     model.setHeaderData(0, orientation="Horizontal", value=self.column_names[0])
-    #     model.setHeaderData(1, orientation="Horizontal", value=self.column_names[1])
-    #     model.setHeaderData(2, orientation="Horizontal", value=self.column_names[2])
-    #     model.setHeaderData(3, orientation="Horizontal", value=self.column_names[3])
-    #     model.select()
 
     @qtc.pyqtSlot(int)
     def set_filter_column(self, index):
@@ -124,7 +117,6 @@ class TableViewWidget(qtw.QWidget):
         self.tableView = TableView()
         tableViewWidth = self.tableView.frameGeometry().width()
         tableViewHeight = self.tableView.frameGeometry().height()
-        # print(tableViewWidth, tableViewHeight)
 
         # label
         lblTitle = qtw.QLabel()
@@ -139,11 +131,14 @@ class TableViewWidget(qtw.QWidget):
 
         # filter box layout:
         filterLabel = qtw.QLabel('Filter by column: ')
+        filterLabel.setStyleSheet(QSS)
 
         filterLineEdit = qtw.QLineEdit()
         filterLineEdit.textChanged.connect(self.tableView.filter_proxy_model.setFilterRegularExpression)
+        filterLineEdit.setStyleSheet(QSS)
 
         comboBox = qtw.QComboBox()
+        comboBox.setStyleSheet(QSS)
         comboBox.addItems(["{0}".format(col) for col in self.tableView.column_names])
         comboBox.setCurrentText('title')
         comboBox.currentIndexChanged.connect(lambda idx: self.tableView.set_filter_column(idx))
@@ -259,6 +254,7 @@ class MainWindow(qtw.QMainWindow):
 
 
 if __name__ == '__main__':
+    warn('Warning !', DeprecationWarning)
     app = qtw.QApplication(sys.argv)
 
     window = MainWindow()

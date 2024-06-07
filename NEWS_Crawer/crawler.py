@@ -100,6 +100,7 @@ class Crawler():
         pub_data=self.get_pubs_data(url)
         self.db.insert_row(pub_data)
     def run(self):
+        self.db.delete_data_news_table()
         self.get_links()
         for link in self.seeds:
             self.save_pubs_data(link)
@@ -111,3 +112,4 @@ class Crawler():
 if __name__=='__main__':
     cr=Crawler(BASE_URL)
     cr.run()
+    print(cr.db.select_all_data())
