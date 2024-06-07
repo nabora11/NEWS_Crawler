@@ -37,6 +37,57 @@ class TableView(qtw.QTableView):
         self.filter_proxy_model.setFilterKeyColumn(1)
         self.setModel(self.filter_proxy_model)
         self.setup_gui()
+        self.indexRow=1
+        self.indexCol=1
+        self.setMouseTracking(True)
+        def mouseMoveEvent(self, e):
+            self.row=e.x()
+            self.col=e.y()
+        self.set_content_box()
+        self.entered.connect(self.display_text)
+    def set_content_box(self):
+        self.dialog = qtw.QDialog(parent=self)
+        self.setAttribute(qtc.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setAttribute(qtc.Qt.WidgetAttribute.WA_StyledBackground)
+        self.dialog.setAutoFillBackground(True)
+        self.dialog.setWindowTitle("Current news detail")
+        self.dialog.setStyleSheet(QSS)
+
+
+        intScreenHeight = qtw.QApplication.primaryScreen().availableSize().height()
+        intScreenWidth = qtw.QApplication.primaryScreen().availableSize().width()
+        self.dialog.move(483,
+                         int(intScreenHeight / 2 - self.dialog.height() / 2))
+
+
+        # Create a label with a message
+        label = qtw.QLabel("This is a message in the dialog box.")
+        label.setObjectName("message")
+
+        # Create a layout for the dialog
+        dialog_layout = qtw.QVBoxLayout()
+        dialog_layout.addWidget(label)
+
+        # Set the layout for the dialog
+        self.dialog.setLayout(dialog_layout)
+    def display_text(self,index):
+        if index.row()>=1 and index.column()==3:
+            if index.row!=self.indexRow or index.column!=self.indexCol:
+                if self.dialog.isVisible():
+                    self.dialog.hide()
+                self.indexRow=index.row
+                self.indexCol=index.column
+                self.dialog.move(583,self.rowViewportPosition(index.row())+160)
+                # new_label = qtw.QLabel(index.data)
+                new_label = qtw.QLabel(index.data(qtc.Qt.ItemDataRole.UserRole))
+                new_label.setObjectName("message")
+                label=self.dialog.findChild(qtw.QLabel,"message")
+                self.dialog.layout().replaceWidget(label,new_label)
+                self.dialog.layout().removeWidget(label)
+                self.dialog.show()
+        else:
+            if self.dialog.isVisible():
+                self.dialog.hide()
 
     def setup_model(self):
         model = qtg.QStandardItemModel()
