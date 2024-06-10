@@ -40,36 +40,46 @@ class TableView(qtw.QTableView):
         self.indexRow=1
         self.indexCol=1
         self.setMouseTracking(True)
-        def mouseMoveEvent(self, e):
-            self.row=e.x()
-            self.col=e.y()
         self.set_content_box()
         self.entered.connect(self.display_text)
+        # def mouseMoveEvent(self, e):
+        #     pass
+            # row=e.x()
+            # col=e.y()
+
+
+    # def wheelEvent(self, event):
+    #     lines = qtw.QApplication.wheelScrollLines()
+    #     try:
+    #         qtw.QApplication.setWheelScrollLines(5)
+    #         super().wheelEvent(event)
+    #     finally:
+    #         qtw.QApplication.setWheelScrollLines(lines)
     def set_content_box(self):
         self.dialog = qtw.QDialog(parent=self)
-        self.setAttribute(qtc.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setAttribute(qtc.Qt.WidgetAttribute.WA_StyledBackground)
+        self.dialog.setAttribute(qtc.Qt.WidgetAttribute.WA_QuitOnClose)
+        self.dialog.setAttribute(qtc.Qt.WidgetAttribute.WA_StyledBackground)
         self.dialog.setAutoFillBackground(True)
         self.dialog.setWindowTitle("Current news detail")
         self.dialog.setStyleSheet(QSS)
-
-
-        intScreenHeight = qtw.QApplication.primaryScreen().availableSize().height()
-        intScreenWidth = qtw.QApplication.primaryScreen().availableSize().width()
-        self.dialog.move(483,
-                         int(intScreenHeight / 2 - self.dialog.height() / 2))
-
-
+        self.dialog.move(483,254)
         # Create a label with a message
         label = qtw.QLabel("This is a message in the dialog box.")
         label.setObjectName("message")
-
         # Create a layout for the dialog
-        dialog_layout = qtw.QVBoxLayout()
-        dialog_layout.addWidget(label)
+        scroll_area=qtw.QScrollArea()
+        scroll_area.setObjectName("scroll_area")
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(label)
 
-        # Set the layout for the dialog
+        dialog_layout = qtw.QVBoxLayout()
+        # dialog_layout.addWidget(label)
+        dialog_layout.addWidget(scroll_area)
+      # Set the layout for the dialog
+        self.dialog.setGeometry(400,200,400,200)
         self.dialog.setLayout(dialog_layout)
+
+        # self.dialog.show()
     def display_text(self,index):
         if index.row()>=1 and index.column()==3:
             if index.row!=self.indexRow or index.column!=self.indexCol:
@@ -77,13 +87,15 @@ class TableView(qtw.QTableView):
                     self.dialog.hide()
                 self.indexRow=index.row
                 self.indexCol=index.column
-                self.dialog.move(583,self.rowViewportPosition(index.row())+160)
-                # new_label = qtw.QLabel(index.data)
+                self.dialog.move(483,self.rowViewportPosition(index.row())+160)
                 new_label = qtw.QLabel(index.data(qtc.Qt.ItemDataRole.UserRole))
-                new_label.setObjectName("message")
-                label=self.dialog.findChild(qtw.QLabel,"message")
-                self.dialog.layout().replaceWidget(label,new_label)
-                self.dialog.layout().removeWidget(label)
+                new_label.setWordWrap(True)
+                new_label.setMaximumHeight(200)
+                new_label.setMinimumWidth(300)
+                new_label.setContentsMargins(10,10,10,10)
+                scroll=self.dialog.findChild(qtw.QScrollArea,"scroll_area")
+                scroll.setWidget(new_label)
+
                 self.dialog.show()
         else:
             if self.dialog.isVisible():
@@ -115,9 +127,10 @@ class TableView(qtw.QTableView):
         # get rows and columns count from model:
         rows_count = self.model().rowCount()
         cols_count = self.model().columnCount()
-
+        # self.setVerticalScrollBarPolicy(qtc.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.setMinimumWidth(cols_count * 230)
-        self.setMinimumHeight(rows_count * 40)
+        # self.setMinimumHeight(rows_count * 40)
+        self.setMinimumHeight(800)
 
         ### resize cells to fit the content:
         # self.resizeRowsToContents()
