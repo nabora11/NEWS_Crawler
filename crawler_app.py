@@ -42,25 +42,14 @@ class TableView(qtw.QTableView):
         self.setMouseTracking(True)
         self.set_content_box()
         self.entered.connect(self.display_text)
-        # def mouseMoveEvent(self, e):
-        #     pass
-            # row=e.x()
-            # col=e.y()
-
-
-    # def wheelEvent(self, event):
-    #     lines = qtw.QApplication.wheelScrollLines()
-    #     try:
-    #         qtw.QApplication.setWheelScrollLines(5)
-    #         super().wheelEvent(event)
-    #     finally:
-    #         qtw.QApplication.setWheelScrollLines(lines)
+        self.clicked.connect(self.dialog_freeze)
     def set_content_box(self):
         self.dialog = qtw.QDialog(parent=self)
         self.dialog.setAttribute(qtc.Qt.WidgetAttribute.WA_QuitOnClose)
         self.dialog.setAttribute(qtc.Qt.WidgetAttribute.WA_StyledBackground)
         self.dialog.setAutoFillBackground(True)
         self.dialog.setWindowTitle("Current news detail")
+        self.dialog.setWindowIcon(qtg.QIcon("./NEWS_Crawer/icons/book.png"))
         self.dialog.setStyleSheet(QSS)
         self.dialog.move(483,254)
         # Create a label with a message
@@ -76,7 +65,7 @@ class TableView(qtw.QTableView):
         # dialog_layout.addWidget(label)
         dialog_layout.addWidget(scroll_area)
       # Set the layout for the dialog
-        self.dialog.setGeometry(400,200,400,200)
+        self.dialog.setGeometry(500,200,500,200)
         self.dialog.setLayout(dialog_layout)
 
         # self.dialog.show()
@@ -85,22 +74,26 @@ class TableView(qtw.QTableView):
             if index.row!=self.indexRow or index.column!=self.indexCol:
                 if self.dialog.isVisible():
                     self.dialog.hide()
-                self.indexRow=index.row
-                self.indexCol=index.column
-                self.dialog.move(483,self.rowViewportPosition(index.row())+160)
+                self.indexRow=index.row()
+                self.indexCol=index.column()
+                self.dialog.move(298,self.rowViewportPosition(index.row())+60)
                 new_label = qtw.QLabel(index.data(qtc.Qt.ItemDataRole.UserRole))
                 new_label.setWordWrap(True)
                 new_label.setMaximumHeight(200)
                 new_label.setMinimumWidth(300)
-                new_label.setContentsMargins(10,10,10,10)
+                new_label.setContentsMargins(20,20,20,20)
                 scroll=self.dialog.findChild(qtw.QScrollArea,"scroll_area")
                 scroll.setWidget(new_label)
-
                 self.dialog.show()
         else:
             if self.dialog.isVisible():
                 self.dialog.hide()
-
+    def dialog_freeze(self):
+        if self.dialog.isVisible():
+            self.dialog.close()
+            self.dialog.move(700,self.rowViewportPosition(self.indexRow)+60)
+            self.dialog.exec()
+        else:pass
     def setup_model(self):
         model = qtg.QStandardItemModel()
         model.setHorizontalHeaderLabels(self.column_names)
@@ -238,6 +231,8 @@ class TableViewWidget(qtw.QWidget):
     def on_comboBox_currentIndexChanged(self, index):
         self.tableView.filter_proxy_model.setFilterKeyColumn(index)
 
+
+
     def get_current_datetime(self):
         return datetime.datetime.now().strftime('%d.%m.%y, %H:%M:%S')
 
@@ -249,12 +244,14 @@ class MainWindow(qtw.QMainWindow):
         self.crawler = Crawler(BASE_URL)
 
         self.setWindowTitle('NEWS Crawler')
+        self.setWindowIcon(qtg.QIcon("./NEWS_Crawer/icons/book.png"))
+        self.setGeometry(300,300,300,300)
 
         ### Main layout
         mainLayout = qtw.QVBoxLayout()
 
         ### Table Caption part:
-        lblTableCaption = qtw.QLabel('News Data')
+        lblTableCaption = qtw.QLabel('NEWS DATA')
         lblTableCaption.setObjectName('lblTableCaption')
         lblTableCaption.setAlignment(qtc.Qt.AlignmentFlag.AlignCenter)
         mainLayout.addWidget(lblTableCaption)
@@ -291,7 +288,6 @@ class MainWindow(qtw.QMainWindow):
         self.setCentralWidget(mainWidget)
 
         self.show()
-
     def show_data(self):
         self.tableViewWidget = TableViewWidget(parent=self)
         self.tableViewWidget.show()
@@ -322,5 +318,6 @@ if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
 
     window = MainWindow()
+    window.setStyleSheet(QSS)
 
     sys.exit(app.exec())

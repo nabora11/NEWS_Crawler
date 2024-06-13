@@ -1,8 +1,13 @@
 QSS = """
+    QMainWindow {
+    border-image: url(./NEWS_Crawer/icons/cup.png);
+    background-color: rgb(80, 90, 10);
+    }
+    
     QLabel{
     font-family: Helvetica;
     font-weight: normal;
-    font-size: 9pt;
+    font-size: 12pt;
     color: tomato;
     }
 
@@ -64,5 +69,13 @@ QSS = """
     font-weight: normal;
     font-size: 9pt;
     color: tomato;
+    }
+    
+    QDialog {
+    border-top: 2px solid lightgreen;
+    border-left: 2px solid lightgreen;
+    border-right: 2px solid lightgreen;
+    border-bottom:2px solid lightgreen;
+    background-color: lightyellow;
     }
 """
