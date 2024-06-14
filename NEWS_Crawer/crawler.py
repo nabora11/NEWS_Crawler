@@ -1,4 +1,5 @@
 import os
+import subprocess
 import re
 import string
 import requests
@@ -10,13 +11,6 @@ from urllib.parse import urljoin
 from dateutil.relativedelta import relativedelta
 BASE_URL="https://faktor.bg/bg/articles/novini"
 
-LINKS=[
-'https://faktor.bg/bg/articles/novini-balgariya-bogoslov-ne-e-izklyucheno-mitropolit-nikolay-da-bade-nominiran-za-patriarh',
-'https://faktor.bg/bg/articles/novini-balgariya-sotsialnata-komisiya-ne-odobri-zadalzhitelna-podkrepa-za-11-rast-na-pensiite',
-'https://faktor.bg/bg/articles/novini-svyat-asandzh-poluchi-razreshenie-za-palno-obzhalvane-na-ekstradiraneto-si-v-sasht',
-'https://faktor.bg/bg/articles/novini-balgariya-vtornikat-slanchev-sryadata-i-chetvartakat-obache-pak-shte-sa-dazhdovni',
-'https://faktor.bg/bg/articles/novini-balgariya-glavchev-poiska-dans-da-proveri-prichinite-za-spirane-na-simeonovskiya-lift'
-]
 
 class Crawler():
     def __init__(self,url:string):
@@ -104,12 +98,9 @@ class Crawler():
         self.get_links()
         for link in self.seeds:
             self.save_pubs_data(link)
-        # self.db.reset_indexes_table()
-        # for link in LINKS:
-        #     self.save_pubs_data(link)
         print('Crawler finished its job!')
 
 if __name__=='__main__':
     cr=Crawler(BASE_URL)
     cr.run()
-    print(cr.db.select_all_data())
+    # print(cr.db.select_all_data())

@@ -108,14 +108,6 @@ class DB():
             cursor.execute(sql)
             self.conn.commit()
 
-#     def reset_indexes_table(self):
-#         sql=""" DELETE FROM news_table WHERE id=1;
-#                 ALTER TABLE news_table DROP COLUMN id;
-#                 ALTER TABLE news_table AUTO_INCREMENT = 1;
-# ALTER TABLE news_table ADD `id` int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;"""
-#         with self.conn.cursor() as cursor:
-#             cursor.execute(sql)
-
 if __name__=='__main__':
     db=DB()
 #     row_data_= dict(tltle='news1', pub_date=date(2023,12,23), content='text1')
