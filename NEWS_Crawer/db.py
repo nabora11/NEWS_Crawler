@@ -92,6 +92,7 @@ class DB():
     def get_column_names(self):
         # sql = "SELECT id, title, pub_date, content FROM  news_table LIMIT 1;"
         # sql="SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'news_table';"
+        list_=['id', 'title','pub_date','content','created_at','updated_at']
         sql="""SELECT DISTINCT COLUMN_NAME FROM
         INFORMATION_SCHEMA.COLUMNS
         WHERE COLUMN_NAME  IN ('id', 'title','pub_date','content','created_at','updated_at')
@@ -100,7 +101,9 @@ class DB():
             cursor.execute(sql)
             result = cursor.fetchall()
         result_list=list(item[0] for item in result)
-        return result_list
+        if list_.sort()==result_list.sort():
+            return ['id', 'title','pub_date','content','created_at','updated_at']
+        else: print('Column names not match')
     def delete_data_news_table(self):
         sql = "TRUNCATE TABLE news_table;"
 

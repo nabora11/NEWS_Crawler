@@ -96,6 +96,7 @@ class TableView(qtw.QTableView):
         else:pass
     def setup_model(self):
         model = qtg.QStandardItemModel()
+        print(self.column_names)
         model.setHorizontalHeaderLabels(self.column_names)
 
         for i, row in enumerate(self.data):
@@ -226,7 +227,7 @@ class TableViewWidget(qtw.QWidget):
     def close_all(self):
         self.parent.close()
         self.close()
-
+    #
     @qtc.pyqtSlot(int)
     def on_comboBox_currentIndexChanged(self, index):
         self.tableView.filter_proxy_model.setFilterKeyColumn(index)
