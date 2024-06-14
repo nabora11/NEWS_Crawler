@@ -23,7 +23,7 @@ class Crawler():
     def write_to_file(self,filename, content):
         """ Write string to given filename
         				:param filename: string
-        				:param content: sring
+        				:param content: string
         		"""
         try:
             with open(filename, 'w', encoding='utf-8') as f:

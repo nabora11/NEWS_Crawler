@@ -70,7 +70,7 @@ class TableView(qtw.QTableView):
 
         # self.dialog.show()
     def display_text(self,index):
-        if index.row()>=1 and index.column()==3:
+        if index.row()>=0 and index.column()==3:
             if index.row!=self.indexRow or index.column!=self.indexCol:
                 if self.dialog.isVisible():
                     self.dialog.hide()

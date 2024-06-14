@@ -125,4 +125,4 @@ if __name__=='__main__':
     # print(db.select_all_data())
     # print(db.get_column_names())
     # db.get_last_updated_date()
-    db.delete_data_news_table()
+    # db.delete_data_news_table()
