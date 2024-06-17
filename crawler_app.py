@@ -271,6 +271,15 @@ class MainWindow(qtw.QMainWindow):
         ''')
         lblTableCaption.setObjectName('lblTableCaption')
         lblTableCaption.setAlignment(qtc.Qt.AlignmentFlag.AlignCenter)
+        #set animation
+        self.anim = qtc.QPropertyAnimation(lblTableCaption, b"pos")
+        self.anim.setDirection(qtc.QPropertyAnimation.Direction.Backward)
+        self.anim.setStartValue(qtc.QPoint(0, 0))
+        self.anim.setEndValue(qtc.QPoint(30, 30))
+        self.anim.setDuration(1500)
+        self.anim.setLoopCount(100)
+        self.anim.start()
+
         mainLayout.addWidget(lblTableCaption)
 
         ### Buttons
