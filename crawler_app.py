@@ -96,7 +96,6 @@ class TableView(qtw.QTableView):
         else:pass
     def setup_model(self):
         model = qtg.QStandardItemModel()
-        print(self.column_names)
         model.setHorizontalHeaderLabels(self.column_names)
 
         for i, row in enumerate(self.data):
