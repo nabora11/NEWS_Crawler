@@ -1,4 +1,5 @@
 import sys
+import time
 from NEWS_Crawer.style import *
 from time import strftime
 from warnings import warn
@@ -169,6 +170,8 @@ class TableViewWidget(qtw.QWidget):
 
         self.setup_gui()
 
+
+
     def setup_gui(self):
         # table view:
         self.tableView = TableView()
@@ -185,6 +188,15 @@ class TableViewWidget(qtw.QWidget):
             color: purple;
         ''')
         lblTitle.setAlignment(qtc.Qt.AlignmentFlag.AlignCenter)
+
+        #set animation
+        self.anim = qtc.QPropertyAnimation(lblTitle, b"pos")
+        self.anim.setDirection(qtc.QPropertyAnimation.Direction.Backward)
+        self.anim.setStartValue(qtc.QPoint(0, 0))
+        self.anim.setEndValue(qtc.QPoint(30, 30))
+        self.anim.setDuration(1500)
+        self.anim.setLoopCount(100)
+        self.anim.start()
 
         # filter box layout:
         filterLabel = qtw.QLabel('Filter by column: ')
@@ -252,6 +264,11 @@ class MainWindow(qtw.QMainWindow):
 
         ### Table Caption part:
         lblTableCaption = qtw.QLabel('NEWS DATA')
+        lblTableCaption.setStyleSheet('''
+            font-size: 30px;
+            margin:20px auto;
+            color: purple;
+        ''')
         lblTableCaption.setObjectName('lblTableCaption')
         lblTableCaption.setAlignment(qtc.Qt.AlignmentFlag.AlignCenter)
         mainLayout.addWidget(lblTableCaption)
