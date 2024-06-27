@@ -1,6 +1,7 @@
 import sys
 import time
 from NEWS_Crawer.style import *
+from NEWS_Crawer.__init__ import *
 from time import strftime
 from warnings import warn
 from PyQt6 import QtWidgets as qtw
@@ -13,7 +14,7 @@ from NEWS_Crawer.db import DB
 
 import datetime
 
-BASE_URL = "https://faktor.bg/bg/articles/novini"
+# BASE_URL = "https://faktor.bg/bg/articles/novini"
 
 
 class TableView(qtw.QTableView):
@@ -167,8 +168,10 @@ class TableViewWidget(qtw.QWidget):
         super().__init__(*args, **kwargs)
 
         self.parent = parent
-
+        self.setWindowTitle('NEWS Crawler')
+        self.setWindowIcon(qtg.QIcon("./NEWS_Crawer/icons/book.png"))
         self.setup_gui()
+        self.setStyleSheet(QSS)
 
 
 
@@ -177,6 +180,7 @@ class TableViewWidget(qtw.QWidget):
         self.tableView = TableView()
         tableViewWidth = self.tableView.frameGeometry().width()
         tableViewHeight = self.tableView.frameGeometry().height()
+
 
         # label
         lblTitle = qtw.QLabel()
@@ -188,6 +192,7 @@ class TableViewWidget(qtw.QWidget):
             color: purple;
         ''')
         lblTitle.setAlignment(qtc.Qt.AlignmentFlag.AlignCenter)
+
 
         #set animation
         self.anim = qtc.QPropertyAnimation(lblTitle, b"pos")
@@ -257,6 +262,7 @@ class MainWindow(qtw.QMainWindow):
 
         self.setWindowTitle('NEWS Crawler')
         self.setWindowIcon(qtg.QIcon("./NEWS_Crawer/icons/book.png"))
+        self.setStyleSheet(QSS)
         self.setGeometry(300,300,300,300)
 
         ### Main layout
@@ -344,6 +350,6 @@ if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
 
     window = MainWindow()
-    window.setStyleSheet(QSS)
+    # window.setStyleSheet(QSS)
 
     sys.exit(app.exec())

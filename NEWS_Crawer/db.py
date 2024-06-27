@@ -1,28 +1,35 @@
 import mysql.connector as mc
-# from __init__ import *
+from NEWS_Crawer.__init__ import *
 from configparser import ConfigParser
 import os
 from datetime import date
 
 
 class DB():
+    ###creates a class DB.
     def __init__(self):
         try:
+            ### parses the configuration settings for connection from config.ini file
             mysql_config = self.config_parse('config.ini', 'mysql')
+
+            ### creates connection to existing database or creates new database if not exist
             db1=mc.connect(host=mysql_config["host"],user=mysql_config["user"],
                            passwd=mysql_config["password"],port=mysql_config["port"])
             with db1.cursor() as cursor:
                 sql = "CREATE DATABASE IF NOT EXISTS faktor_bg_news"
                 cursor.execute(sql)
             self.conn=mc.connect(**mysql_config)
-            # self.drop_news_table()
+
+            ### creates news table every time during initialization of class DB()
             self.create_news_table()
         except mc.Error as e:
             print(e)
     def config_parse(self,filename,section):
+        ### parses the configuration settings for connection from config.ini file
         config_db= {}
         parser=ConfigParser()
-        package_directory = os.path.dirname(os.path.abspath(__file__))
+        # package_directory = os.path.dirname(os.path.abspath(__file__))
+        package_directory = CONFIG_PATH
         if parser.read(os.path.join(package_directory,filename)):
             if parser.has_section(section):
                 items=parser.items(section)
@@ -35,6 +42,7 @@ class DB():
         return config_db
 
     def create_news_table(self):
+            ### creates NEWS_table in faktor_bg_news database if not exists
         sql = """
     			CREATE TABLE IF NOT EXISTS news_table(
     				id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,7 +51,6 @@ class DB():
     				content TEXT,
     				created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     				updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
     				CONSTRAINT title_date UNIQUE (title, pub_date)
     			);
     		"""
@@ -90,8 +97,6 @@ class DB():
         return result
 
     def get_column_names(self):
-        # sql = "SELECT id, title, pub_date, content FROM  news_table LIMIT 1;"
-        # sql="SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'news_table';"
         list_=['id', 'title','pub_date','content','created_at','updated_at']
         sql="""SELECT DISTINCT COLUMN_NAME FROM
         INFORMATION_SCHEMA.COLUMNS
@@ -103,7 +108,7 @@ class DB():
         result_list=list(item[0] for item in result)
         if list_.sort()==result_list.sort():
             return ['id', 'title','pub_date','content','created_at','updated_at']
-        else: print('Column names not match')
+        else: print('Column names do not match')
     def delete_data_news_table(self):
         sql = "TRUNCATE TABLE news_table;"
 

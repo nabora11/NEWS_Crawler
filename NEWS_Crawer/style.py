@@ -4,6 +4,10 @@ QSS = """
     background-color: rgb(80, 90, 10);
     }
     
+    QTableView{
+    border-image: url(./NEWS_Crawer/icons/newspaper.png);
+    }
+    
     QLabel{
     font-family: Helvetica;
     font-weight: normal;
